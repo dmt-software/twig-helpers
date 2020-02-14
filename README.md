@@ -1,5 +1,5 @@
 # Twig Helpers
 
-## install
+## Installation
 
 `composer require dmt-software/twig-helpers`

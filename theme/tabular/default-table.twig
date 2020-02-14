@@ -1,11 +1,11 @@
 {#
     Open table.
 
-    @param array|object - attr  The html attributes (style, class, title).
+    @param Table - table  The table to display.
 #}
-{% macro tabular_open(attr) %}
-    <table class="{% if (attr.class) %} {{ attr.class|join(' ') }}"{% endif %}">
-    {% if attr.title %}<caption>{{ attr.title }}</caption>{% endif %}
+{% macro tabular_open(table) %}
+    <table class="{% if (table.attr.class) %} {{ table.attr.class|join(' ') }}"{% endif %}">
+    {% if table.title %}<caption>{{ table.title }}</caption>{% endif %}
 {% endmacro %}
 
 {#
@@ -35,14 +35,20 @@
 {#
     Render table row.
 
-    @param array|object - row      The row to display.
-    @param Column[]     - columns  The columns to filter display.
+    @param array|object  - row      The row to display.
+    @param Column[]|null - columns  The columns to filter display.
 #}
 {% macro data_row(row, columns) %}
     <tr>
+    {% if columns %}
     {% for column in columns %}
         <td{% if (column.attr.class) %} class="{{ column.attr.class|join(' ') }}"{% endif %}>{{ attribute(row, column.name) }}</td>
     {% endfor %}
+    {% else %}
+    {%  for cell in row %}
+        <td>{{ cell }}</td>
+    {% endfor %}
+    {% endif %}
     </tr>
 {% endmacro %}
 
