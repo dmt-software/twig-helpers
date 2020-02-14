@@ -1,0 +1,55 @@
+{#
+    Open table.
+
+    @param array|object - attr  The html attributes (style, class, title).
+#}
+{% macro tabular_open(attr) %}
+    <table class="{% if (attr.class) %} {{ attr.class|join(' ') }}"{% endif %}">
+    {% if attr.title %}<caption>{{ attr.title }}</caption>{% endif %}
+{% endmacro %}
+
+{#
+    Render table headers.
+
+    @param Column[] - columns  The columns to display.
+#}
+{% macro header_row(columns) %}
+    <thead>
+        <tr>
+            {% for column in columns %}
+                <th>{{ column.display }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+{% endmacro %}
+
+{#
+    Render data rows.
+#}
+{% macro data_rows(result, columns) %}
+    <tbody>
+        {% for row in result %}{{ _self.data_row(row, columns) }}{% endfor %}
+    </tbody>
+{% endmacro %}
+
+{#
+    Render table row.
+
+    @param array|object - row      The row to display.
+    @param Column[]     - columns  The columns to filter display.
+#}
+{% macro data_row(row, columns) %}
+    <tr>
+    {% for column in columns %}
+        <td{% if (column.attr.class) %} class="{{ column.attr.class|join(' ') }}"{% endif %}>{{ attribute(row, column.name) }}</td>
+    {% endfor %}
+    </tr>
+{% endmacro %}
+
+{#
+    Close the opened table.
+#}
+{% macro tabular_close() %}
+    </table>
+{% endmacro %}
+
