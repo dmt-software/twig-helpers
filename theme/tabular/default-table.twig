@@ -17,7 +17,7 @@
     <thead>
         <tr>
             {% for column in columns %}
-                <th>{{ column.display }}</th>
+                <th>{% if column.sortable %}<a href="{{ column.sortingUrl(column) }}">{{ column.display|raw }}</a>{% else %}{{ column.display|raw }}{% endif %}</th>
             {% endfor %}
         </tr>
     </thead>
@@ -25,6 +25,9 @@
 
 {#
     Render data rows.
+
+    @param array|object[] - result   The rows to display.
+    @param Column[]|null  - columns  The columns to filter display.
 #}
 {% macro data_rows(result, columns) %}
     <tbody>
@@ -42,11 +45,11 @@
     <tr>
     {% if columns %}
     {% for column in columns %}
-        <td{% if (column.attr.class) %} class="{{ column.attr.class|join(' ') }}"{% endif %}>{{ attribute(row, column.name) }}</td>
+        <td{% if (column.attr.class) %} class="{{ column.attr.class|join(' ') }}"{% endif %}>{{ attribute(row, column.name)|raw }}</td>
     {% endfor %}
     {% else %}
-    {%  for cell in row %}
-        <td>{{ cell }}</td>
+    {% for cell in row %}
+        <td>{{ cell|raw }}</td>
     {% endfor %}
     {% endif %}
     </tr>
