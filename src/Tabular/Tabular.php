@@ -61,9 +61,9 @@ class Tabular
     /**
      * The location of the twig template to use.
      *
-     * @var string $theme
+     * @var string $template
      */
-    protected $theme = '@tabular/default-table.twig';
+    protected $template = '@tabular/default-table.twig';
 
     /**
      * @return string
@@ -75,14 +75,10 @@ class Tabular
 
     /**
      * @param string $title
-     *
-     * @return $this
      */
-    public function setTitle(string $title): self
+    public function setTitle(string $title): void
     {
         $this->title = $title;
-
-        return $this;
     }
 
     /**
@@ -102,26 +98,6 @@ class Tabular
     }
 
     /**
-     * @return Column[]|iterable
-     */
-    public function getColumns(): ?iterable
-    {
-        return $this->columns;
-    }
-
-    /**
-     * @param Column[]|iterable|null $columns
-     *
-     * @return Tabular
-     */
-    public function setColumns(?iterable $columns): self
-    {
-        $this->columns = $columns;
-
-        return $this;
-    }
-
-    /**
      * @return MetadataInterface
      */
     public function getMetadata(): ?MetadataInterface
@@ -131,14 +107,18 @@ class Tabular
 
     /**
      * @param MetadataInterface $metadata
-     *
-     * @return $this
      */
-    public function setMetadata(MetadataInterface $metadata): self
+    public function setMetadata(MetadataInterface $metadata): void
     {
         $this->metadata = $metadata;
+    }
 
-        return $this;
+    /**
+     * @return Column[]|iterable
+     */
+    public function getColumns(): ?iterable
+    {
+        return $this->columns;
     }
 
     /**
@@ -153,14 +133,10 @@ class Tabular
 
     /**
      * @param Column $column
-     *
-     * @return $this
      */
-    public function setColumn(Column $column): self
+    public function setColumn(Column $column): void
     {
         $this->columns[$column->getName()] = $column;
-
-        return $this;
     }
 
     /**
@@ -173,37 +149,13 @@ class Tabular
 
     /**
      * @param iterable $resultSet
-     *
-     * @return $this
      */
-    public function setResultSet(iterable $resultSet): self
+    public function setResultSet(iterable $resultSet): void
     {
         if (is_array($resultSet)) {
             $resultSet = new ArrayIterator($resultSet);
         }
 
         $this->resultSet = $resultSet;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTheme(): string
-    {
-        return $this->theme;
-    }
-
-    /**
-     * @param string $theme
-     *
-     * @return $this
-     */
-    public function setTheme(string $theme): self
-    {
-        $this->theme = $theme;
-
-        return $this;
     }
 }

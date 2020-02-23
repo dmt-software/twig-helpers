@@ -4,7 +4,7 @@
     @param Table - table  The table to display.
 #}
 {% macro tabular_open(table) %}
-    <table class="{% if (table.attr.class) %} {{ table.attr.class|join(' ') }}"{% endif %}">
+    <table{% if (table.attr.class) %} class="{{ table.attr.class|join(' ') }}"{% endif %}>
     {% if table.title %}<caption>{{ table.title }}</caption>{% endif %}
 {% endmacro %}
 
@@ -24,14 +24,33 @@
 {% endmacro %}
 
 {#
+    Render table headers (simple).
+
+    @param Column[] - columns  The columns to display.
+#}
+{% macro header_simple(columns) %}
+    <tr>
+        {% for column in columns %}
+            <th>{{ column.display|raw }}</th>
+        {% endfor %}
+    </tr>
+{% endmacro %}
+
+{#
     Render data rows.
 
-    @param array|object[] - result   The rows to display.
-    @param Column[]|null  - columns  The columns to filter display.
+    @param array|object[] - result                The rows to display.
+    @param Column[]|null  - columns               The columns to filter display.
+    @param int|null       - reoccur_header_after  When set the headers will be displayed after x amount of rows
 #}
-{% macro data_rows(result, columns) %}
+{% macro data_rows(result, columns, reoccur_header_after) %}
     <tbody>
-        {% for row in result %}{{ _self.data_row(row, columns) }}{% endfor %}
+        {% for row in result %}
+            {% if columns and reoccur_header_after > 0 and loop.index > reoccur_header_after and ((loop.index + 1) % reoccur_header_after) == 0 %}
+            {{ _self.header_simple(columns) }}
+            {% endif %}
+            {{ _self.data_row(row, columns) }}
+        {% endfor %}
     </tbody>
 {% endmacro %}
 
@@ -61,4 +80,3 @@
 {% macro tabular_close() %}
     </table>
 {% endmacro %}
-

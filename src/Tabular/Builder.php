@@ -48,9 +48,11 @@ class Builder
     {
         if (!is_callable($name)) {
             $name = function (Tabular $table) use ($name, $display, $attributes) {
-                return (new Column($table, $name))
-                    ->setDisplay($display)
-                    ->setAttr($attributes ?? []);
+                $column = new Column($table, $name);
+                $column->setDisplay($display);
+                $column->setAttr($attributes ?? []);
+
+                return $column;
             };
         }
 
@@ -71,10 +73,12 @@ class Builder
     {
         return $this->addColumn(
             function (Tabular $table) use ($name, $display, $attributes) {
-                return (new Column($table, $name))
-                    ->setDisplay($display)
-                    ->setAttr($attributes ?? [])
-                    ->setSortable();
+                $column = new Column($table, $name);
+                $column->setDisplay($display);
+                $column->setAttr($attributes ?? []);
+                $column->setSortable();;
+
+                return $column;
             }
         );
     }

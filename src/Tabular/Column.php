@@ -57,14 +57,10 @@ class Column
 
     /**
      * @param string|callable|null $display
-     *
-     * @return $this
      */
-    public function setDisplay($display): self
+    public function setDisplay($display): void
     {
         $this->display = $display;
-
-        return $this;
     }
 
     /**
@@ -77,14 +73,10 @@ class Column
 
     /**
      * @param iterable $attr
-     *
-     * @return $this
      */
-    public function setAttr(iterable $attr): self
+    public function setAttr(iterable $attr): void
     {
         $this->attr = $attr;
-
-        return $this;
     }
 
     /**
@@ -96,13 +88,11 @@ class Column
     }
 
     /**
-     * @return $this
+     *
      */
-    public function setSortable(): self
+    public function setSortable(): void
     {
         $this->sortable = true;
-
-        return $this;
     }
 
     /**
