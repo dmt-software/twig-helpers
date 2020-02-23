@@ -76,7 +76,26 @@ class Builder
                 $column = new Column($table, $name);
                 $column->setDisplay($display);
                 $column->setAttr($attributes ?? []);
-                $column->setSortable();;
+                $column->setSortable();
+
+                return $column;
+            }
+        );
+    }
+
+    /**
+     * @param string $display
+     * @param callable $callback
+     * @param iterable|null $attributes
+     * @return $this
+     */
+    public function addCustomColumn(string $display, callable $callback, iterable $attributes = null): self
+    {
+        return $this->addColumn(
+            function (Tabular $table) use ($display, $callback, $attributes) {
+                $column = new Column($table, $display);
+                $column->setAttr($attributes ?? []);
+                $column->setContent($callback);
 
                 return $column;
             }

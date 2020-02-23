@@ -21,6 +21,9 @@ class Column
     /** @var iterable $attr */
     protected $attr = [];
 
+    /** @var callable $content */
+    protected $content;
+
     /** @var bool $sortable */
     protected $sortable = false;
 
@@ -77,6 +80,34 @@ class Column
     public function setAttr(iterable $attr): void
     {
         $this->attr = $attr;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCustom(): bool
+    {
+        return null !== $this->content;
+    }
+
+    /**
+     * @param object|array $row
+     *
+     * @return string
+     */
+    public function getContent($row): string
+    {
+        return is_string($this->content)
+            ? $this->content
+            : call_user_func($this->content, $row);
+    }
+
+    /**
+     * @param callable|string $content
+     */
+    public function setContent($content): void
+    {
+        $this->content = $content;
     }
 
     /**

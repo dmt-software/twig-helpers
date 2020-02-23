@@ -64,7 +64,8 @@
     <tr>
     {% if columns %}
     {% for column in columns %}
-        <td{% if (column.attr.class) %} class="{{ column.attr.class|join(' ') }}"{% endif %}>{{ attribute(row, column.name)|raw }}</td>
+        {% set content %}{% if column.custom %}{{ column.content(row)|raw }}{% else %}{{ attribute(row, column.name)|raw }}{% endif %}{% endset %}
+        <td{% if (column.attr.class) %} class="{{ column.attr.class|join(' ') }}"{% endif %}>{{ content }}</td>
     {% endfor %}
     {% else %}
     {% for cell in row %}
