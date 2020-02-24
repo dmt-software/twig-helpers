@@ -84,12 +84,14 @@ class Builder
     }
 
     /**
+     * Add a custom column to the table.
+     *
      * @param string $display
-     * @param callable $callback
+     * @param \Closure $callback
      * @param iterable|null $attributes
      * @return $this
      */
-    public function addCustomColumn(string $display, callable $callback, iterable $attributes = null): self
+    public function addCustomColumn(string $display, \Closure $callback, iterable $attributes = null): self
     {
         return $this->addColumn(
             function (Tabular $table) use ($display, $callback, $attributes) {

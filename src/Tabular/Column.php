@@ -97,17 +97,15 @@ class Column
      */
     public function getContent($row): string
     {
-        return is_string($this->content)
-            ? $this->content
-            : call_user_func($this->content, $row);
+        return call_user_func($this->content, $row);
     }
 
     /**
      * @param callable|string $content
      */
-    public function setContent($content): void
+    public function setContent(\Closure $content): void
     {
-        $this->content = $content;
+        $this->content = $content->bindTo($this);
     }
 
     /**
