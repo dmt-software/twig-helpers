@@ -1,0 +1,12 @@
+{% extends _self|replace({'bootstrap-3-table.twig': ''}) ~ 'default-table.twig' %}
+
+{#
+    Open table.
+
+    @param Table      - table   The table to display.
+    @param array|null - classes The bootstrap classes to add to the table (e.g. table-striped, table-condensed
+#}
+{% macro tabular_open(table, classes = []) %}
+<table class="table{% if classes %} {{ classes|filter(val => val starts with 'table-')|join(' ') }}{% endif %}{% if (table.attr.class) %} {{ table.attr.class|join(' ') }}{% endif %}">
+    {% if table.title %}<caption>{{ table.title }}</caption>{% endif %}
+{% endmacro %}

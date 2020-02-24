@@ -1,0 +1,56 @@
+{% extends _self|replace({'bootstrap-4-table.twig': ''}) ~ 'default-table.twig' %}
+
+{#
+    Open table.
+
+    @param Table      - table   The table to display.
+    @param array|null - classes The bootstrap classes to add to the table (e.g. table-striped, table-condensed
+#}
+{% macro tabular_open(table, classes = []) %}
+<table class="table{% if classes %} {{ classes|filter(val => val starts with 'table-')|join(' ') }}{% endif %}{% if (table.attr.class) %} {{ table.attr.class|join(' ') }}{% endif %}">
+    {% if table.title %}<caption>{{ table.title }}</caption>{% endif %}
+{% endmacro %}
+
+{#
+    Render table headers.
+
+    @param Column[] - columns  The columns to display.
+#}
+{% macro header_row(columns) %}
+    <thead>
+        <tr>
+            {% for column in columns %}
+                <th scope="col">{% if column.sortable %}<a href="{{ column.sortingUrl(column) }}">{{ column.display|raw }}</a>{% else %}{{ column.display|raw }}{% endif %}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+{% endmacro %}
+
+{#
+    Render table row.
+
+    @param array|object  - row      The row to display.
+    @param Column[]|null - columns  The columns to filter display.
+#}
+{% macro data_row(row, columns) %}
+    <tr>
+    {% if columns %}
+    {% for column in columns %}
+        {% set content %}{% if column.custom %}{{ column.content(row)|raw }}{% else %}{{ attribute(row, column.name)|raw }}{% endif %}{% endset %}
+        {% if loop.first %}
+        <th scope="row" {% if (column.attr.class) %} class="{{ column.attr.class|join(' ') }}"{% endif %}>{{ content }}</th>
+        {% else %}
+        <td{% if (column.attr.class) %} class="{{ column.attr.class|join(' ') }}"{% endif %}>{{ content }}</td>
+        {% endif %}
+    {% endfor %}
+    {% else %}
+    {% for cell in row %}
+        {% if loop.first %}
+        <th scope="row">{{ cell|raw }}</th>
+        {% else %}
+        <td>{{ cell|raw }}</td>
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+    </tr>
+{% endmacro %}
