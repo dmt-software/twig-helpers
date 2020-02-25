@@ -24,8 +24,8 @@ In php create a table using the tabular builder, add a result set to it and rend
 ```php
 <?php
  
-use Twig\Environment;
 use DMT\Twig\Tabular\Builder;
+use Twig\Environment;
  
 $table = (new Builder())
     ->addColumn('id', '#')
@@ -78,16 +78,23 @@ $table = (new Builder())
 ```
 #### Render a table with custom column(s)
 
+```twig
+{# email-field.twig #}
+<a href="mailto:{{ row.email }}">{{ row.email }}</a>
+```
+
 ```php
 <?php
  
 use DMT\Twig\Tabular\Builder;
+use Twig\Environment;
  
+/** @var Environment $twig */
 $table = (new Builder())
     ->addColumn('id', '#')
     ->addColumn('username', 'name')
-    ->addCustomColumn('email', function ($row) {
-        return '<a href="mailto:' . $row->email . '">' . $row->email . '</a>';    
+    ->addCustomColumn('email', function ($row) use ($twig) {
+        return $twig->render('email-field.twig', ['row' => $row, 'columns' => $this]);
     })
     ->build();
 ```
