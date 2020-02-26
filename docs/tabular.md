@@ -25,8 +25,8 @@ Your template should (after extension) contain the following macros:
  * tabular_close - To end the opened tabular
 
 > NOTE: macros that include other macros will always use the parent and not the
-> macro defined in the child. To override the _data_row_ the data_rows must be 
-> copied or added too.
+> macro defined in the child. To override the _data_row_ the _data_rows_ must 
+> be copied or added too.
 
 
 ## Column definitions
