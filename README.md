@@ -8,7 +8,6 @@
 
 ### Tabular
 
-#### Render a table
 First create a template that will render the tabular data. 
 The following snippet shows an example of a twig template.
 ```twig
@@ -58,43 +57,4 @@ The output will look like the code below.
     </tbody>
 </table>
 ```
-#### Render a table with sortable column(s)
-
-The code below will setup a table containing a sortable column.
-```php
-<?php
- 
-use DMT\Twig\Tabular\Builder;
-use DMT\Twig\Tabular\Metadata\QuerystringMetadata;
-use Psr\Http\Message\UriInterface;
- 
-/** @var UriInterface $uri */
-$table = (new Builder())
-    ->addColumn('id', '#')
-    ->addSortableColumn('username', 'name')
-    ->addColumn('email')
-    ->withMetadata(new QuerystringMetadata($uri))
-    ->build();
-```
-#### Render a table with custom column(s)
-
-```twig
-{# email-field.twig #}
-<a href="mailto:{{ row.email }}">{{ row.email }}</a>
-```
-
-```php
-<?php
- 
-use DMT\Twig\Tabular\Builder;
-use Twig\Environment;
- 
-/** @var Environment $twig */
-$table = (new Builder())
-    ->addColumn('id', '#')
-    ->addColumn('username', 'name')
-    ->addCustomColumn('email', function ($row) use ($twig) {
-        return $twig->render('email-field.twig', ['row' => $row, 'columns' => $this]);
-    })
-    ->build();
-```
+more [documentation](docs/tabular.md) on tabular configuration and usage.

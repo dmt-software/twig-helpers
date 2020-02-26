@@ -27,6 +27,24 @@
 {% endmacro %}
 
 {#
+    Render data rows.
+
+    @param array|object[] - result                The rows to display.
+    @param Column[]|null  - columns               The columns to filter display.
+    @param int|null       - reoccur_header_after  When set the headers will be displayed after x amount of rows
+#}
+{% macro data_rows(result, columns, reoccur_header_after) %}
+    <tbody>
+    {% for row in result %}
+        {% if columns and reoccur_header_after > 0 and loop.index > reoccur_header_after and ((loop.index + 1) % reoccur_header_after) == 0 %}
+            {{ _self.header_simple(columns) }}
+        {% endif %}
+        {{ _self.data_row(row, columns) }}
+    {% endfor %}
+    </tbody>
+{% endmacro %}
+
+{#
     Render table row.
 
     @param array|object  - row      The row to display.
