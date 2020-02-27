@@ -1,18 +1,18 @@
 <?php
 
-namespace DMT\Twig\Tabular\Metadata;
+namespace DMT\Twig\Metadata;
 
 use DMT\Twig\Tabular\Column;
-use DMT\Twig\Tabular\MetadataInterface;
+use DMT\Twig\Tabular\MetadataInterface as TabularMetadata;
 use Psr\Http\Message\UriInterface;
 
 /**
  * Class QuerystringMetadata
  *
- * @package DMT\Twig\Tabular
+ * @package DMT\Twig\Metadata
  * @author Bas de Mes <bas@dmt-software.nl>
  */
-class QuerystringMetadata implements MetadataInterface
+class QuerystringMetadata implements TabularMetadata
 {
     /** @var UriInterface $requestUri */
     protected $requestUri;
@@ -22,9 +22,6 @@ class QuerystringMetadata implements MetadataInterface
 
     /** @var string $order */
     protected $order;
-
-    /** @var int $page */
-    protected $page;
 
     /**
      * QueryStringMetadata constructor.
@@ -51,18 +48,6 @@ class QuerystringMetadata implements MetadataInterface
 
         return (string) $this->requestUri
             ->withQuery(http_build_query(compact('sort', 'order')));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getPagingUrl(int $page): string
-    {
-        $sort = $this->sort;
-        $order = $this->order;
-
-        return (string) $this->requestUri
-            ->withQuery(http_build_query(compact('page', 'sort', 'order')));
     }
 
     /**

@@ -2,8 +2,6 @@
 
 namespace DMT\Twig\Tabular;
 
-use Twig\Error\RuntimeError;
-
 /**
  * Interface MetadataInterface
  *
@@ -20,13 +18,4 @@ interface MetadataInterface
      * @return string
      */
     public function getSortingUrl(Column $column): string;
-
-    /**
-     * Get the url for paging.
-     *
-     * @param int $page The page number.
-     *
-     * @return string
-     */
-    public function getPagingUrl(int $page): string;
 }

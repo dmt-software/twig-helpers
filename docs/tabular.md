@@ -5,12 +5,25 @@
 ### Select a theme
  
 Depending on your needs, a specific template can be selected for your tabular 
-display. Some predefined display themes are store in the `theme/tebular/` 
+display. Some predefined display themes are store in the `theme/tabular/` 
 folder. To use them you _import_ them inside your template.
 
 ```twig
 {% import 'theme/tabular/bootstrap-4-table.twig' as tab %}
 ```
+
+### Show reoccurring header row
+
+When dealing with a result set that contains a lot of rows, you might choose to
+show the header row after a certain amount of rows. This way the end-user will
+be remembered what the columns contain without scrolling (back) to the top. To
+enable this reoccurring header, the _data_rows_ macro accepts a third argument
+that tells the amount of rows that have to pass until a column header row is 
+displayed again.
+
+```twig
+{{ data_rows(form.resultSet, form.columns, 50) }} 
+```    
 
 ### Create your own theme template
 
@@ -24,9 +37,10 @@ Your template should (after extension) contain the following macros:
  * data_row - To display one single row
  * tabular_close - To end the opened tabular
 
-> NOTE: macros that include other macros will always use the parent and not the
-> macro defined in the child. To override the _data_row_ the _data_rows_ must 
-> be copied or added too.
+> NOTE: macros that include other macros will always use the macro within the
+> file they are at and not the original child template that included them. To 
+> override the _data_row_ the _data_rows_ must be inside the child template 
+> or else the _data_row_ within the parent is used. 
 
 
 ## Column definitions

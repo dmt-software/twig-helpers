@@ -1,5 +1,3 @@
-{% extends _self|replace({'bootstrap-3-table.twig': ''}) ~ 'default-table.twig' %}
-
 {#
     Open table.
 
@@ -9,4 +7,78 @@
 {% macro tabular_open(table, classes = []) %}
 <table class="table{% if classes %} {{ classes|filter(val => val starts with 'table-')|join(' ') }}{% endif %}{% if (table.attr.class) %} {{ table.attr.class|join(' ') }}{% endif %}">
     {% if table.title %}<caption>{{ table.title }}</caption>{% endif %}
+{% endmacro %}
+
+{#
+    Render table headers.
+
+    @param Column[] - columns  The columns to display.
+#}
+{% macro header_row(columns) %}
+    <thead>
+    <tr>
+        {% for column in columns %}
+            <th>{% if column.sortable %}<a href="{{ column.sortingUrl(column) }}">{{ column.display|raw }}</a>{% else %}{{ column.display|raw }}{% endif %}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+{% endmacro %}
+
+{#
+    Render table headers (simple).
+
+    @param Column[] - columns  The columns to display.
+#}
+{% macro header_simple(columns) %}
+    <tr>
+        {% for column in columns %}
+            <th>{{ column.display|raw }}</th>
+        {% endfor %}
+    </tr>
+{% endmacro %}
+
+{#
+    Render data rows.
+
+    @param array|object[] - result                The rows to display.
+    @param Column[]|null  - columns               The columns to filter display.
+    @param int|null       - reoccur_header_after  When set the headers will be displayed after x amount of rows
+#}
+{% macro data_rows(result, columns, reoccur_header_after) %}
+    <tbody>
+    {% for row in result %}
+        {% if columns and reoccur_header_after > 0 and loop.index > reoccur_header_after and ((loop.index + 1) % reoccur_header_after) == 0 %}
+            {{ _self.header_simple(columns) }}
+        {% endif %}
+        {{ _self.data_row(row, columns) }}
+    {% endfor %}
+    </tbody>
+{% endmacro %}
+
+{#
+    Render table row.
+
+    @param array|object  - row      The row to display.
+    @param Column[]|null - columns  The columns to filter display.
+#}
+{% macro data_row(row, columns) %}
+    <tr>
+        {% if columns %}
+            {% for column in columns %}
+                {% set content %}{% if column.custom %}{{ column.content(row)|raw }}{% else %}{{ attribute(row, column.name)|raw }}{% endif %}{% endset %}
+                <td{% if (column.attr.class) %} class="{{ column.attr.class|join(' ') }}"{% endif %}>{{ content }}</td>
+            {% endfor %}
+        {% else %}
+            {% for cell in row %}
+                <td>{{ cell|raw }}</td>
+            {% endfor %}
+        {% endif %}
+    </tr>
+{% endmacro %}
+
+{#
+    Close the opened table.
+#}
+{% macro tabular_close() %}
+</table>
 {% endmacro %}

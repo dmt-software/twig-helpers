@@ -1,0 +1,59 @@
+{#
+    Render field checkboxes
+
+    @param Field - field
+#}
+{% macro checkbox(field) %}
+    {% for option, label in field.options %}
+    <label>
+        <input name="{{ field.name }}[{{ option }}]" type="checkbox" value="1"{{ _self.is_chosen(option, field.value, 'checkbox') }}>
+        {{- label }}
+    </label>
+    {% endfor %}
+    <input type="hidden" name="{{ field.name }}[]">
+{% endmacro %}
+
+{#
+    Render field radio buttons
+
+    @param Field - field
+#}
+{% macro radiobox(field) %}
+    {% for option, label in field.options %}
+        <label>
+            <input name="{{ field.name }}" type="radio" value="{{ option }}"{{ _self.is_chosen(option, field.value, 'radio') }}>
+            {{- label }}
+        </label>
+    {% endfor %}
+{% endmacro %}
+
+{#
+    Render a file upload field
+
+    @param Field - field
+#}
+{% macro upload(field) %}
+    <label style="position: relative">
+        <input type="file" name="{{ field.name }}" id="{{ field.id }}" style="position: relative; z-index: 100; opacity: 0;"
+               onchange="document.getElementById({{ field.id }}_helper_box).value = this.value.replace(/\w:\\[^\\]+\\/, '')">
+        <input type="text" id="{{ field.id }}_helper_box" style="position: absolute; left: 0" value="{{ field.value }}">
+        <button type="button" style="position: absolute; right: 5px;">{{ field.label|default('upload') }}</button>
+    </label>
+{% endmacro %}
+
+{#
+    Check if the option is selected
+
+    @internal
+    @param string|int            - option  The option to check
+    @param array|string|int|null - value   The chosen value(s) for field
+    @param string                - for     The element that contains this chosen option
+#}
+{% macro is_chosen(option, value, for='checkbox') %}
+    {%- if option == value or (value is iterable and option in value) -%}
+        {%- set type = for in ['checkbox', 'radio'] ? 'checked' : 'selected' -%}
+        {{ ' ' }}{{ type }}
+    {%- endif -%}
+{% endmacro %}
+
+
