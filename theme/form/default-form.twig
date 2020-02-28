@@ -1,15 +1,27 @@
-{% extends _self|replace({'default-form.twig': ''}) ~ 'base-form-elements.twig' %}
+{% extends _self|replace({'default-form.twig': ''}) ~ 'form-elements.twig' %}
 
+{#
+    Render form
+
+    @param Form - form  The form to render
+#}
 {% macro form_open(form) %}
-    <form>
+    <form method="{{ form.method|default('post') }}" action="{{ form.action }}" id="{{ form.name }}" enctype="
+        {{- form.type|default('application/x-www-form-urlencoded') }}" accept-charset="{{ form.charset }}">
 {% endmacro %}
 
-{% macro form_row(field) %}
+{#
+    Render field row
+
+    @param Field - field  The field to render
+#}
+{% macro field_row(field) %}
     <div>
     {% if field.label %}
         <label{% if field.id %} for="{{ field.id }}"{% endif %}>{{ field.label }}</label>
     {% endif %}
         {% if field.type == 'hidden'%}{{- _self.hidden(field) -}}{{ field.value }}
+        {% elseif field.type == 'button' %}{{- _self.button(field) -}}
         {% elseif field.type == 'checkbox' %}{{- _self.checkbox(field) -}}
         {% elseif field.type == 'combobox' %}{{- _self.combobox(field) -}}
         {% elseif field.type == 'file' %}{{- _self.file(field) -}}
@@ -20,6 +32,22 @@
     </div>
 {% endmacro %}
 
+{#
+    Render button row
+
+    @param Field[] - fields  The buttons to display
+#}
+{% macro button_row(fields) %}
+    <div>
+    {% for field in fields %}
+        {{- _self.button(field) }}
+    {% endfor %}
+    </div>
+{% endmacro %}
+
+{#
+    End to opened form
+#}
 {% macro form_close() %}
     </form>
 {% endmacro %}

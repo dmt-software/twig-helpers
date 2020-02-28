@@ -1,0 +1,38 @@
+{% extends _self|replace({'bootstrap-3-horizontal-form.twig': ''}) ~ 'form-elements.twig' %}
+
+{#
+    Render form
+
+    @param Form - form  The form to render
+#}
+{% macro form_open(form) %}
+<form method="{{ form.method|default('post') }}" action="{{ form.action }}" id="{{ form.name }}" enctype="
+    {{- form.type|default('application/x-www-form-urlencoded') }}" accept-charset="{{ form.charset }}" class="form-horizontal">
+{% endmacro %}
+
+{#
+    Render field row
+
+    @param Field - field  The field to render
+#}
+{% macro field_row(field) %}
+    <div class="form-group">
+    {% if field.label %}
+        <label{% if field.id %} for="{{ field.id }}"{% endif %} class="col-sm-3 control-label">{{ field.label }}</label>
+        <div class="col-sm-9">
+    {% else %}
+        <div class="col-sm-offset-3 col-sm-9">
+    {% endif %}
+        {% set attr = {"class": "form-control"} %}
+        {% if field.type == 'hidden'%}{{- _self.hidden(field) -}}{{ field.value }}
+        {% elseif field.type == 'button' %}{{- _self.button(field, {"class": "btn btn-primary"}) -}}
+        {% elseif field.type == 'checkbox' %}{{- _self.checkbox(field) -}}
+        {% elseif field.type == 'combobox' %}{{- _self.combobox(field) -}}
+        {% elseif field.type == 'file' %}{{- _self.file(field, attr) -}}
+        {% elseif field.type == 'radio' %}{{- _self.radio(field, attr) -}}
+        {% elseif field.type == 'select' %}{{- _self.select(field, attr) -}}
+        {% elseif field.type == 'textarea' %}{{- _self.textarea(field, attr) -}}
+        {% else %}{{- _self.input(field, attr) -}}{% endif %}
+        </div>
+    </div>
+{% endmacro %}

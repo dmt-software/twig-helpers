@@ -1,4 +1,17 @@
 {#
+    Render buttons
+
+    @param Field - field  The field to render
+    @param array - attr   Theme dependend html attributes to add
+#}
+{% macro button(field, attr) %}
+    <button type="{{ field.type }}"{% if field.name %} {{ field.name }}{% endif %}
+        {%- if field.value %} {{ field.value }}{% endif %}{{- _self.add_attributes(attr) }}{>
+        {{ field.text }}
+    </button>
+{% endmacro %}
+
+{#
     Render checkboxes
 
     @param Field - field  The field to render
@@ -10,14 +23,14 @@
     {% for option, label in field.options %}
     <label>
         <input name="{{ field.name }}[]" type="checkbox" value="{{ option }}"
-            {{- _self.field_attributes(attr) }}{{ _self.is_chosen(option, field.value, 'checkbox') }}>
+            {{- _self.add_attributes(attr) }}{{ _self.is_chosen(option, field.value, 'checkbox') }}>
         {{- label }}
     </label>
     {% endfor %}
     {% else %}
     <label>
         <input name="{{ field.name }}" type="checkbox" value="1"
-            {{- _self.field_attributes(attr) }}{{ _self.is_chosen(true, field.value, 'checkbox') }}>
+            {{- _self.add_attributes(attr) }}{{ _self.is_chosen(true, field.value, 'checkbox') }}>
         {{- field.label }}
     </label>
     {% endif %}
@@ -31,7 +44,7 @@
 #}
 {% macro combobox(field, attr) %}
     <input name="{{ field.name }}" type="text" value="{{ field.value }}" id="{{ field.id }}" list="{{ field.id }}_list_helper"
-        {{- _self.field_attributes(attr, field.type) }}>
+        {{- _self.add_attributes(attr, field.type) }}>
     <datalist id="{{ field.id }}_list_helper"
     {% for option in field.options %}
         <option value="{{ option }}">
@@ -70,7 +83,7 @@
 #}
 {% macro input(field, attr) %}
     <input name="{{ field.name }}" type="{{ field.type }}" value="{{ field.value }}" id="{{ field.id }}"
-        {{- _self.field_attributes(attr, field.type) }}>
+        {{- _self.add_attributes(attr, field.type) }}>
 {% endmacro %}
 
 {#
@@ -83,7 +96,7 @@
     {% for option, label in field.options %}
     <label>
         <input name="{{ field.name }}" type="radio" value="{{ option }}"
-            {{- _self.field_attributes(attr) }}{{ _self.is_chosen(option, field.value, 'radio') }}>
+            {{- _self.add_attributes(attr) }}{{ _self.is_chosen(option, field.value, 'radio') }}>
         {{- label }}
     </label>
     {% endfor %}
@@ -98,7 +111,7 @@
 {% macro select(field, attr) %}
 {%- set name = field.name -%}
 {%- if field.attr.multiple %}{%- set name = field.name ~'[]' -%}<input type="hidden" name="{{ name }}">{% endif -%}
-    <select name="{{ name }}" id="{{ field.id }}"{{- _self.field_attributes(attr, field.type) }}>
+    <select name="{{ name }}" id="{{ field.id }}"{{- _self.add_attributes(attr, field.type) }}>
     {{ _self.select_options(field.options, field.value) }}
     </select>
 {% endmacro %}
@@ -110,7 +123,7 @@
     @param array - attr   Theme dependend html attributes to add
 #}
 {% macro textarea(field, attr) %}
-    <textarea name="{{ field.name }}" id="{{ field.id }}"{{- _self.field_attributes(attr, field.type) }}>
+    <textarea name="{{ field.name }}" id="{{ field.id }}"{{- _self.add_attributes(attr, field.type) }}>
         {{- field.value -}}
     </textarea>
 {% endmacro %}
@@ -124,7 +137,7 @@
 
     @todo filter out incorrect attributes based on element type
 #}
-{% macro field_attributes(attr, for) %}
+{% macro add_attributes(attr, for) %}
     {%- for key, value in attr -%}
         {{ ' ' }}{{ key }}{% if value is not same as(true) %}="{{ value|join(' ') }}"{% endif %}
     {%- endfor -%}
