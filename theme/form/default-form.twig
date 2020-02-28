@@ -1,0 +1,25 @@
+{% extends _self|replace({'default-form.twig': ''}) ~ 'base-form-elements.twig' %}
+
+{% macro form_open(form) %}
+    <form>
+{% endmacro %}
+
+{% macro form_row(field) %}
+    <div>
+    {% if field.label %}
+        <label{% if field.id %} for="{{ field.id }}"{% endif %}>{{ field.label }}</label>
+    {% endif %}
+        {% if field.type == 'hidden'%}{{- _self.hidden(field) -}}{{ field.value }}
+        {% elseif field.type == 'checkbox' %}{{- _self.checkbox(field) -}}
+        {% elseif field.type == 'combobox' %}{{- _self.combobox(field) -}}
+        {% elseif field.type == 'file' %}{{- _self.file(field) -}}
+        {% elseif field.type == 'radio' %}{{- _self.radio(field) -}}
+        {% elseif field.type == 'select' %}{{- _self.select(field) -}}
+        {% elseif field.type == 'textarea' %}{{- _self.textarea(field) -}}
+        {% else %}{{- _self.input(field) -}}{% endif %}
+    </div>
+{% endmacro %}
+
+{% macro form_close() %}
+    </form>
+{% endmacro %}

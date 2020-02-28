@@ -1,44 +1,133 @@
 {#
-    Render field checkboxes
+    Render checkboxes
 
-    @param Field - field
+    @param Field - field  The field to render
+    @param array - attr   Theme dependend html attributes to add
 #}
-{% macro checkbox(field) %}
+{% macro checkbox(field, attr) %}
+    {% if field.options %}
+    <input type="hidden" name="{{ field.name }}[]">
     {% for option, label in field.options %}
     <label>
-        <input name="{{ field.name }}[{{ option }}]" type="checkbox" value="1"{{ _self.is_chosen(option, field.value, 'checkbox') }}>
+        <input name="{{ field.name }}[]" type="checkbox" value="{{ option }}"
+            {{- _self.field_attributes(attr) }}{{ _self.is_chosen(option, field.value, 'checkbox') }}>
         {{- label }}
     </label>
     {% endfor %}
-    <input type="hidden" name="{{ field.name }}[]">
+    {% else %}
+    <label>
+        <input name="{{ field.name }}" type="checkbox" value="1"
+            {{- _self.field_attributes(attr) }}{{ _self.is_chosen(true, field.value, 'checkbox') }}>
+        {{- field.label }}
+    </label>
+    {% endif %}
 {% endmacro %}
 
 {#
-    Render field radio buttons
+    Render a combobox
 
-    @param Field - field
+    @param Field - field  The field to render
+    @param array - attr   Theme dependend html attributes to add
 #}
-{% macro radiobox(field) %}
-    {% for option, label in field.options %}
-        <label>
-            <input name="{{ field.name }}" type="radio" value="{{ option }}"{{ _self.is_chosen(option, field.value, 'radio') }}>
-            {{- label }}
-        </label>
+{% macro combobox(field, attr) %}
+    <input name="{{ field.name }}" type="text" value="{{ field.value }}" id="{{ field.id }}" list="{{ field.id }}_list_helper"
+        {{- _self.field_attributes(attr, field.type) }}>
+    <datalist id="{{ field.id }}_list_helper"
+    {% for option in field.options %}
+        <option value="{{ option }}">
     {% endfor %}
+    </datalist>
 {% endmacro %}
 
 {#
     Render a file upload field
 
-    @param Field - field
+    @param Field - field  The field to render
 #}
-{% macro upload(field) %}
+{% macro file(field) %}
     <label style="position: relative">
         <input type="file" name="{{ field.name }}" id="{{ field.id }}" style="position: relative; z-index: 100; opacity: 0;"
-               onchange="document.getElementById({{ field.id }}_helper_box).value = this.value.replace(/\w:\\[^\\]+\\/, '')">
-        <input type="text" id="{{ field.id }}_helper_box" style="position: absolute; left: 0" value="{{ field.value }}">
+               onchange="document.getElementById({{ field.id }}_input_helper).value = this.value.replace(/\w:\\[^\\]+\\/, '')">
+        <input type="text" id="{{ field.id }}_input_helper" style="position: absolute; left: 0" value="{{ field.value }}">
         <button type="button" style="position: absolute; right: 5px;">{{ field.label|default('upload') }}</button>
     </label>
+{% endmacro %}
+
+{#
+    Render a hidden input
+
+    @param Field - field  The field to render
+#}
+{% macro hidden(field) %}
+    <input name="{{ field.name }}" type="hidden" value="{{ field.value }}">
+{% endmacro %}
+
+{#
+    Render an input field
+
+    @param Field - field  The field to render
+    @param array - attr   Theme dependend html attributes to add
+#}
+{% macro input(field, attr) %}
+    <input name="{{ field.name }}" type="{{ field.type }}" value="{{ field.value }}" id="{{ field.id }}"
+        {{- _self.field_attributes(attr, field.type) }}>
+{% endmacro %}
+
+{#
+    Render field radio buttons
+
+    @param Field - field  The field to render
+    @param array - attr   Theme dependend html attributes to add
+#}
+{% macro radio(field, attr) %}
+    {% for option, label in field.options %}
+    <label>
+        <input name="{{ field.name }}" type="radio" value="{{ option }}"
+            {{- _self.field_attributes(attr) }}{{ _self.is_chosen(option, field.value, 'radio') }}>
+        {{- label }}
+    </label>
+    {% endfor %}
+{% endmacro %}
+
+{#
+    Render a select field
+
+    @param Field - field  The field to render
+    @param array - attr   Theme dependend html attributes to add
+#}
+{% macro select(field, attr) %}
+{%- set name = field.name -%}
+{%- if field.attr.multiple %}{%- set name = field.name ~'[]' -%}<input type="hidden" name="{{ name }}">{% endif -%}
+    <select name="{{ name }}" id="{{ field.id }}"{{- _self.field_attributes(attr, field.type) }}>
+    {{ _self.select_options(field.options, field.value) }}
+    </select>
+{% endmacro %}
+
+{#
+    Render a textarea
+
+    @param Field - field  The field to render
+    @param array - attr   Theme dependend html attributes to add
+#}
+{% macro textarea(field, attr) %}
+    <textarea name="{{ field.name }}" id="{{ field.id }}"{{- _self.field_attributes(attr, field.type) }}>
+        {{- field.value -}}
+    </textarea>
+{% endmacro %}
+
+{#
+    Check if the option is selected
+
+    @internal
+    @param array  - attr  The attributes for the form element
+    @param string - for   The element that contains this chosen option
+
+    @todo filter out incorrect attributes based on element type
+#}
+{% macro field_attributes(attr, for) %}
+    {%- for key, value in attr -%}
+        {{ ' ' }}{{ key }}{% if value is not same as(true) %}="{{ value|join(' ') }}"{% endif %}
+    {%- endfor -%}
 {% endmacro %}
 
 {#
@@ -56,4 +145,21 @@
     {%- endif -%}
 {% endmacro %}
 
+{#
+    Add select options
 
+    @internal
+    @param array                 - options The options to select
+    @param array|string|int|null - value   The chosen value(s) for field
+#}
+{% macro select_options(options, value) %}
+    {% for option, label in options %}
+    {% if label is iterable %}
+    <optgroup label="{{ option }}">
+        {{ _self.select_options(label, value) -}}
+    </optgroup>
+    {% else %}
+        <option value="{{ option }}"{{- _self.is_chosen(option, value) }}>{{ label }}</option>
+    {% endif %}
+    {% endfor %}
+{% endmacro %}
