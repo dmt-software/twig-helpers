@@ -4,41 +4,41 @@
     @param Table      - table   The table to display.
     @param array|null - classes The bootstrap classes to add to the table (e.g. table-striped, table-condensed
 #}
-{% macro tabular_open(table, classes = []) %}
+{%- macro tabular_open(table, classes = []) -%}
 <table class="table{% if classes %} {{ classes|filter(val => val starts with 'table-')|join(' ') }}{% endif %}{% if (table.attr.class) %} {{ table.attr.class|join(' ') }}{% endif %}">
-{% if table.title %}
-    <caption>{{ table.title }}</caption>{% endif %}
-{% endmacro %}
+{%- if table.title %}
+    <caption>{{ table.title }}</caption>{% endif -%}
+{%- endmacro -%}
 
 {#
     Render table headers.
 
     @param Column[] - columns  The columns to display.
 #}
-{% macro header_row(columns) %}
+{%- macro header_row(columns) -%}
     <thead>
         <tr>
         {% for column in columns %}
-            <th scope="col">{% if column.sortable %}<a
-                    href="{{ column.sortingUrl(column) }}">{{ column.display|raw }}</a>{% else %}{{ column.display|raw }}{% endif %}
+            <th scope="col">{%- if column.sortable %}<a
+                    href="{{ column.sortingUrl(column) }}">{{ column.display|raw }}</a>{% else %}{{ column.display|raw }}{% endif -%}
             </th>
         {% endfor %}
         </tr>
     </thead>
-{% endmacro %}
+{%- endmacro -%}
 
 {#
     Render table headers (simple).
 
     @param Column[] - columns  The columns to display.
 #}
-{% macro header_simple(columns) %}
+{%- macro header_simple(columns) -%}
     <tr>
         {% for column in columns %}
             <th>{{ column.display|raw }}</th>
         {% endfor %}
     </tr>
-{% endmacro %}
+{%- endmacro -%}
 
 {#
     Render data rows.
@@ -47,16 +47,16 @@
     @param Column[]|null  - columns               The columns to filter display.
     @param int|null       - reoccur_header_after  When set the headers will be displayed after x amount of rows
 #}
-{% macro data_rows(result, columns, reoccur_header_after) %}
+{%- macro data_rows(result, columns, reoccur_header_after) -%}
     <tbody>
     {% for row in result %}
-        {% if columns and reoccur_header_after > 0 and loop.index > reoccur_header_after and ((loop.index + 1) % reoccur_header_after) == 0 %}
+        {%- if columns and reoccur_header_after > 0 and loop.index > reoccur_header_after and ((loop.index + 1) % reoccur_header_after) == 0 %}
         {{ _self.header_simple(columns) }}
-        {% endif %}
+        {% endif -%}
         {{ _self.data_row(row, columns) }}
     {% endfor %}
     </tbody>
-{% endmacro %}
+{%- endmacro -%}
 
 {#
     Render table row.
@@ -64,32 +64,32 @@
     @param array|object  - row      The row to display.
     @param Column[]|null - columns  The columns to filter display.
 #}
-{% macro data_row(row, columns) %}
+{%- macro data_row(row, columns) -%}
     <tr>
         {% if columns %}
-            {% for column in columns %}
+            {%- for column in columns %}
                 {% set content %}{% if column.custom %}{{ column.content(row)|raw }}{% else %}{{ attribute(row, column.name)|raw }}{% endif %}{% endset %}
-                {% if loop.first %}
+                {%- if loop.first %}
                     <th scope="row" {% if (column.attr.class) %} class="{{ column.attr.class|join(' ') }}"{% endif %}>{{ content }}</th>
                 {% else %}
                     <td{% if (column.attr.class) %} class="{{ column.attr.class|join(' ') }}"{% endif %}>{{ content }}</td>
-                {% endif %}
+                {% endif -%}
             {% endfor %}
         {% else %}
             {% for cell in row %}
-                {% if loop.first %}
+                {%- if loop.first %}
                     <th scope="row">{{ cell|raw }}</th>
                 {% else %}
                     <td>{{ cell|raw }}</td>
-                {% endif %}
+                {% endif -%}
             {% endfor %}
-        {% endif %}
+        {% endif -%}
     </tr>
-{% endmacro %}
+{%- endmacro -%}
 
 {#
     Close the opened table.
 #}
-{% macro tabular_close() %}
+{%- macro tabular_close() -%}
 </table>
-{% endmacro %}
+{%- endmacro -%}
