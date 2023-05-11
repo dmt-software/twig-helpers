@@ -2,57 +2,32 @@
 
 namespace DMT\Twig\Tabular;
 
+use Closure;
 use Twig\Error\RuntimeError;
 
-/**
- * Class Column
- *
- * @package DMT\Twig\Tabular
- * @author Bas de Mes <bas@dmt-software.nl>
- */
 class Column
 {
-    /** @var string $name */
-    protected $name;
-
+    protected string $name;
     /** @var string|callable|null $display */
     protected $display;
-
-    /** @var iterable $attr */
-    protected $attr = [];
-
+    protected iterable $attr = [];
     /** @var callable $content */
     protected $content;
+    protected bool $sortable = false;
 
-    /** @var bool $sortable */
-    protected $sortable = false;
+    private Tabular $parent;
 
-    /** @var Tabular $parent */
-    private $parent;
-
-    /**
-     * Column constructor.
-     *
-     * @param Tabular $parent
-     * @param string $name
-     */
     public function __construct(Tabular $parent, string $name)
     {
         $this->parent = $parent;
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDisplay(): string
     {
         return $this->display ?? $this->name;
@@ -66,25 +41,16 @@ class Column
         $this->display = $display;
     }
 
-    /**
-     * @return iterable|null
-     */
     public function getAttr(): ?iterable
     {
         return $this->attr;
     }
 
-    /**
-     * @param iterable $attr
-     */
     public function setAttr(iterable $attr): void
     {
         $this->attr = $attr;
     }
 
-    /**
-     * @return bool
-     */
     public function isCustom(): bool
     {
         return null !== $this->content;
@@ -100,25 +66,16 @@ class Column
         return call_user_func($this->content, $row);
     }
 
-    /**
-     * @param callable|string $content
-     */
-    public function setContent(\Closure $content): void
+    public function setContent(Closure $content): void
     {
         $this->content = $content->bindTo($this);
     }
 
-    /**
-     * @return bool
-     */
     public function isSortable(): bool
     {
         return $this->sortable;
     }
 
-    /**
-     *
-     */
     public function setSortable(): void
     {
         $this->sortable = true;
@@ -127,7 +84,6 @@ class Column
     /**
      * Get sorting url.
      *
-     * @return string
      * @throws RuntimeError
      */
     public function getSortingUrl(): string

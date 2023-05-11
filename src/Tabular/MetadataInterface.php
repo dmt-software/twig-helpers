@@ -2,12 +2,6 @@
 
 namespace DMT\Twig\Tabular;
 
-/**
- * Interface MetadataInterface
- *
- * @package DMT\Twig\Tabular
- * @author Bas de Mes <bas@dmt-software.nl>
- */
 interface MetadataInterface
 {
     /**

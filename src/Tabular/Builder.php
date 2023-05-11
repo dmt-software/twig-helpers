@@ -2,35 +2,21 @@
 
 namespace DMT\Twig\Tabular;
 
-/**
- * Class Builder
- *
- * @package DMT\Twig\Tabular
- * @author Bas de Mes <bas@dmt-software.nl>
- */
 class Builder
 {
-    /** @var Tabular $container */
-    private $container;
+    private Tabular $tabular;
 
-    /**
-     * Builder constructor.
-     */
     public function __construct()
     {
-        $this->container = new Tabular();
+        $this->tabular = new Tabular();
     }
 
     /**
      * Add metadata to the table.
-     *
-     * @param MetadataInterface $metadata
-     *
-     * @return $this
      */
     public function withMetadata(MetadataInterface $metadata): self
     {
-        $this->container->setMetadata($metadata);
+        $this->tabular->setMetadata($metadata);
 
         return $this;
     }
@@ -56,7 +42,7 @@ class Builder
             };
         }
 
-        $this->container->setColumn(call_user_func($name, $this->container));
+        $this->tabular->setColumn(call_user_func($name, $this->tabular));
 
         return $this;
     }
@@ -67,6 +53,7 @@ class Builder
      * @param string $name
      * @param string|null $display
      * @param iterable|null $attributes
+     *
      * @return $this
      */
     public function addSortableColumn(string $name, string $display = null, iterable $attributes = null): self
@@ -89,6 +76,7 @@ class Builder
      * @param string $display
      * @param \Closure $callback
      * @param iterable|null $attributes
+     *
      * @return $this
      */
     public function addCustomColumn(string $display, \Closure $callback, iterable $attributes = null): self
@@ -104,17 +92,12 @@ class Builder
         );
     }
 
-    /**
-     * Build the table.
-     *
-     * @return Tabular
-     */
     public function build(): Tabular
     {
         try {
-            return $this->container;
+            return $this->tabular;
         } finally {
-            $this->container = new Tabular();
+            $this->tabular = new Tabular();
         }
     }
 }
